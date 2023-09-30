@@ -70,7 +70,7 @@ const getVarianteCruzada = async (type) => {
     }
 }
 
-app.get("/", (req, res) => {
+app.get("/", cors(), (req, res) => {
     res.send("Bienvenido a mi aplicación!");
 });
 
