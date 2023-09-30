@@ -73,12 +73,20 @@ app.get("/", (req, res) => {
     res.send("Bienvenido a mi aplicación!");
 });
 
-app.get("/lottoActivo", async(req, res) => {
+app.get("/lotto-activo", async(req, res) => {
     res.json(await getVarianteCruzada('lottoActivo'));
 });
 
-app.get("/laGranjita", async(req, res) => {
+app.get("/la-granjita", async(req, res) => {
     res.json(await getVarianteCruzada('laGranjita'));
+});
+
+app.get("/selva-plus", async(req, res) => {
+    res.json(await getVarianteCruzada('selvaPlus'));
+});
+
+app.get("/lotto-rey", async(req, res) => {
+    res.json(await getVarianteCruzada('lottoRey'));
 });
 
 const PORT = process.env.PORT || 5000;
