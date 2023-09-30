@@ -1,17 +1,18 @@
 import express from "express";
-const app = express();
-
-// Asegúrate de importar la función 'result' aquí
 import { result } from './send-results.js';
 
-app.get("/", async(req, res) => {
-    try{
-        // Usa la función 'result' para obtener los datos
-        let resultData = await result();
+const app = express();
 
-        let dataYestLA = resultData.ayer.lottoActivo.map(val => (val === "0") ? 37 : (val === "00") ? 38 : Number(val));
-        let dataTodayLA = resultData.hoy.lottoActivo_hoy.map(val => (val === "0") ? 37 : (val === "00") ? 38 : Number(val));
-        let matrizResults = dataYestLA.concat(dataTodayLA);
+const processData = async (type) => {
+    let resultData = await result();
+    let dataYestLA = resultData.ayer[type].map(val => (val === "0") ? 37 : (val === "00") ? 38 : Number(val));
+    let dataTodayLA = resultData.hoy[type + '_hoy'].map(val => (val === "0") ? 37 : (val === "00") ? 38 : Number(val));
+    return dataYestLA.concat(dataTodayLA);
+}
+
+const getVarianteCruzada = async (type) => {
+    try {
+        let matrizResults = await processData(type);
 
         let num1 = matrizResults[matrizResults.length - 1];
         let filaNum1 = Math.floor((num1 - 1) / 3);
@@ -35,8 +36,7 @@ app.get("/", async(req, res) => {
                 colNum1 = colNum2;
             }
         }
-        console.log('num1: ', num1);
-        console.log('num2: ', num2);
+
         let matriz = [];
         let contador = 1;
         for (let i = 0; i < 12; i++) {
@@ -47,24 +47,34 @@ app.get("/", async(req, res) => {
             }
             matriz.push(fila);
         }
+        
         let grupoNum1 = Math.floor(filaNum1 / 4);
         let grupoNum2 = Math.floor(filaNum2 / 4);
         let varianteCruzada1 = [];
         for (let i = grupoNum2 * 4; i < (grupoNum2 + 1) * 4; i++) {
             varianteCruzada1.push(matriz[i][colNum1]);
         }
+        
         let varianteCruzada2 = [];
         for (let i = grupoNum1 * 4; i < (grupoNum1 + 1) * 4; i++) {
             varianteCruzada2.push(matriz[i][colNum2]);
         }
-        let varianteCruzada = varianteCruzada1.concat(varianteCruzada2);
         
-        res.json(varianteCruzada);
+        return varianteCruzada1.concat(varianteCruzada2);
+
         
+
     } catch (error) {
-        res.json({error});
+        return { error };
     }
-    
+}
+
+app.get("/lottoActivo", async(req, res) => {
+    res.json(await getVarianteCruzada('lottoActivo'));
+});
+
+app.get("/laGranjita", async(req, res) => {
+    res.json(await getVarianteCruzada('laGranjita'));
 });
 
 const PORT = process.env.PORT || 5000;
