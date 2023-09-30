@@ -2,7 +2,7 @@ import express from "express";
 const app = express();
 
 // Asegúrate de importar la función 'result' aquí
-import { result } from './export/send-results.js';
+import { result } from './send-results.js';
 
 app.get("/", async(req, res) => {
     try{
