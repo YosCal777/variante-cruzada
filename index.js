@@ -69,6 +69,10 @@ const getVarianteCruzada = async (type) => {
     }
 }
 
+app.get("/", (req, res) => {
+    res.send("Bienvenido a mi aplicación!");
+});
+
 app.get("/lottoActivo", async(req, res) => {
     res.json(await getVarianteCruzada('lottoActivo'));
 });
