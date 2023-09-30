@@ -1,5 +1,6 @@
 import express from "express";
 import { result } from './send-results.js';
+import cors from 'cors';
 
 const app = express();
 
@@ -73,19 +74,19 @@ app.get("/", (req, res) => {
     res.send("Bienvenido a mi aplicación!");
 });
 
-app.get("/lotto-activo", async(req, res) => {
+app.get("/lotto-activo", cors(), async(req, res) => {
     res.json(await getVarianteCruzada('lottoActivo'));
 });
 
-app.get("/la-granjita", async(req, res) => {
+app.get("/la-granjita", cors(), async(req, res) => {
     res.json(await getVarianteCruzada('laGranjita'));
 });
 
-app.get("/selva-plus", async(req, res) => {
+app.get("/selva-plus", cors(), async(req, res) => {
     res.json(await getVarianteCruzada('selvaPlus'));
 });
 
-app.get("/lotto-rey", async(req, res) => {
+app.get("/lotto-rey", cors(), async(req, res) => {
     res.json(await getVarianteCruzada('lottoRey'));
 });
 
